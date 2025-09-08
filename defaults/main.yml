@@ -1,0 +1,5 @@
+---
+deno:
+  user:
+  install_script: install-deno.sh
+  state: present # reinstall, absent

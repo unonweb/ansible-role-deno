@@ -1,0 +1,115 @@
+---
+# NOTES
+# -----
+# The official install script is used to install deno the first time
+# Upgrades need to be handled on the host locally
+# https://github.com/denoland/deno/releases
+
+- name: deno role
+  tags:
+    - deno
+  block:
+
+  # requisities 
+  - name: Apt install unzip curl
+    become: true
+    ansible.builtin.apt:
+      state: present
+      name: 
+      - unzip
+      - curl
+
+  # normal user
+  - when: deno.user != "root"
+    vars:
+      _path_exec: "/home/{{ deno.user }}/.deno/bin/deno"
+    block:
+
+    # install
+    - when: deno.state == "present"
+      block:
+
+      # check if deno exec is already there
+      - name: Check {{ _path_exec }}
+        ansible.builtin.stat:
+          path: "{{ _path_exec }}"
+        register: file
+
+      # if not install deno
+      - when: not file.stat.exists
+        block:
+
+        # run script
+        - name: Copy and run {{ deno.install_script }}
+          become: true
+          become_user: "{{ deno.user }}"
+          ansible.builtin.script:
+            cmd: "{{ deno.install_script }} --yes"
+
+    # reinstall
+    - when: deno.state == "reinstall"
+      block:
+
+      - name: Copy and run {{ deno.install_script }}
+        become: true
+        become_user: "{{ deno.user }}"
+        ansible.builtin.script:
+          cmd: "{{ deno.install_script }} --yes"
+
+    # remove
+    - when: deno.state == "absent"
+      block:
+    
+      - name: Remove {{ _path_exec }}
+        become: true
+        ignore_errors: true
+        failed_when: false
+        ansible.builtin.file:
+          path: "{{ _path_exec }}"
+          state: absent
+
+  # root user
+  - when: deno.user == "root"
+    vars:
+      _path_exec: "/root/.deno/bin/deno"
+    block:
+
+    # check if deno exec is already there
+    - name: Check {{ _path_exec }}
+      become: true
+      become_user: root
+      ansible.builtin.stat:
+        path: "{{ _path_exec }}"
+      register: file
+
+    # if not install deno
+    - when: not file.stat.exists
+      block:
+
+      - name: Copy and run {{ deno.install_script }}
+        become: true
+        become_user: root
+        ansible.builtin.script:
+          cmd: "{{ deno.install_script }} --yes"
+
+    # reinstall
+    - when: deno.state == "reinstall"
+      block:
+
+      - name: Copy and run {{ deno.install_script }}
+        become: true
+        become_user: "{{ deno.user }}"
+        ansible.builtin.script:
+          cmd: "{{ deno.install_script }} --yes"
+
+    # remove
+    - when: deno.state == "absent"
+      block:
+    
+      - name: Remove {{ _path_exec }}
+        become: true
+        ignore_errors: true
+        failed_when: false
+        ansible.builtin.file:
+          path: "{{ _path_exec }}"
+          state: absent

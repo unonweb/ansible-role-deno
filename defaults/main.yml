@@ -1,5 +1,6 @@
 ---
-deno:
-  user:
-  install_script: install-deno.sh
-  state: present # reinstall, absent
+deno_user:
+deno_install_script: install-deno.sh
+deno_state: present # reinstall, absent
+deno_path_exec_user: "/home/{{ deno_user }}/.deno/bin/deno"
+deno_path_exec_root: "/root/.deno/bin/deno"

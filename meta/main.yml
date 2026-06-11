@@ -1,0 +1,22 @@
+---
+dependencies: []
+
+galaxy_info:
+  author: Udo Nonner
+  description: Setup deno on Debian Linux
+  license: MIT
+  min_ansible_version: "2.9"
+  platforms:
+    - name: Debian
+      versions:
+        - trixie
+
+argument_specs:
+  main:
+    options:
+      deno_user:
+        required: true
+        type: str
+      deno_install_script:
+        required: true
+        type: str

@@ -7,4 +7,6 @@ NOTES
 =====
 
 The official install script is used to install deno the first time.
-Upgrades need to be handled on the host locally.
+The script's source is: https://deno.land/install.sh
+
+**Upgrades** need to be handled on the host locally.

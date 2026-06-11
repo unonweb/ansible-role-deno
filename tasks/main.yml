@@ -23,6 +23,7 @@
 
       # check if deno exec is already there
       - name: Check {{ deno_path_exec_user }}
+        become: true
         ansible.builtin.stat:
           path: "{{ deno_path_exec_user }}"
         register: __deno_path_exec_user

@@ -4,13 +4,7 @@
     - deno
   block:
 
-  # assert
-  - name: Assertions for deno role
-    ansible.builtin.assert:
-      that:
-      - deno_user != None
-
-  # apt install
+  # apt install prerequisites
   - name: Apt install unzip curl
     become: true
     ansible.builtin.apt:

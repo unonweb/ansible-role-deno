@@ -28,7 +28,7 @@
       become: true
       become_user: "{{ deno_user }}"
       ansible.builtin.script:
-        cmd: install-deno.sh --yes"
+        cmd: "install-deno.sh --yes"
 
 - tags: [role-deno-install]
   when: deno_state == "reinstall"
@@ -38,7 +38,7 @@
     become: true
     become_user: "{{ deno_user }}"
     ansible.builtin.script:
-      cmd: install-deno.sh --yes"
+      cmd: "install-deno.sh --yes"
 
 - tags: [role-deno-install]
   when: deno_state == "absent"

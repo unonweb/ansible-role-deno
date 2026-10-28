@@ -1,0 +1,53 @@
+---
+- tags: [role-deno-install]
+  when: deno_state == "present"
+  block:
+
+  # install prerequisites
+  - name: Apt install unzip curl
+    become: true
+    ansible.builtin.apt:
+      state: present
+      name: 
+      - unzip
+      - curl
+
+  # check if deno exec is already there
+  - name: Check {{ deno_path_exec_user }}
+    become: true
+    ansible.builtin.stat:
+      path: "{{ deno_path_exec_user }}"
+    register: __deno_path_exec_user
+
+  # if not install deno
+  - when: not __deno_path_exec_user.stat.exists
+    block:
+
+    # run script
+    - name: Copy and run install-deno.sh
+      become: true
+      become_user: "{{ deno_user }}"
+      ansible.builtin.script:
+        cmd: install-deno.sh --yes"
+
+- tags: [role-deno-install]
+  when: deno_state == "reinstall"
+  block:
+
+  - name: Copy and run install-deno.sh
+    become: true
+    become_user: "{{ deno_user }}"
+    ansible.builtin.script:
+      cmd: install-deno.sh --yes"
+
+- tags: [role-deno-install]
+  when: deno_state == "absent"
+  block:
+    
+  - name: Remove {{ deno_path_exec_user }}
+    become: true
+    ignore_errors: true
+    failed_when: false
+    ansible.builtin.file:
+      path: "{{ deno_path_exec_user }}"
+      state: absent
